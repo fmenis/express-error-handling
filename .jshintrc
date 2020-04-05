@@ -1,0 +1,13 @@
+{
+    "esversion": 9,
+    "node": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "freeze": true,
+    "newcap": true,
+    "quotmark": "single",
+    "unused": true,
+    "loopfunc": true,
+    "varstmt": true
+}
