@@ -1,6 +1,6 @@
 'use strict';
 
-const db = require('../utils/db');
+const db = require('../utils/db.util');
 const shortid = require('shortid');
 
 

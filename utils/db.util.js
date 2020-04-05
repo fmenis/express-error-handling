@@ -8,7 +8,7 @@
 const shortid = require('shortid');
 
 let db = [
-    {
+    { 
         id: shortid.generate(),
         name: 'Phil',
         age: 30,

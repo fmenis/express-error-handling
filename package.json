@@ -1,19 +1,22 @@
 {
-  "name": "express-error-handling",
-  "version": "1.0.0",
-  "description": "Sample express app to test API error handling and logging",
-  "main": "app.js",
-  "scripts": {
-    "start": "nodemon app.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "shortid": "^2.2.15"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.2"
-  }
+	"name": "express-error-handling",
+	"version": "1.0.0",
+	"description": "Sample express app to test API error handling and logging",
+	"main": "app.js",
+	"scripts": {
+		"start": "NODE_ENV=development nodemon --inspect app.js",
+		"start-prod": "NODE_ENV=production node app.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"express": "^4.17.1",
+		"shortid": "^2.2.15",
+		"winston": "^3.2.1",
+		"winston-daily-rotate-file": "^4.4.2"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.2"
+	}
 }
