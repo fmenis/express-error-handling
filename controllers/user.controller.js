@@ -1,10 +1,16 @@
 'use strict';
 
 const userService = require('../services/user.service');
+const logger = require('../utils/logger.util');
 
 module.exports.getAllUsers = async (req, res, next) => {
-    const users = await userService.getAllUsers();
-    res.send(users);
+    try {
+        const users = await userService.getAllUsers();
+        res.send(users);
+    } catch (error) {
+        logger.error('[Users] error during users retrivment');
+        next(error);
+    }
 };
 
 

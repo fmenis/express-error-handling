@@ -2,16 +2,17 @@
 	"name": "express-error-handling",
 	"version": "1.0.0",
 	"description": "Sample express app to test API error handling and logging",
-	"main": "app.js",
+	"main": "bin/www",
 	"scripts": {
-		"start": "NODE_ENV=development nodemon --inspect app.js",
-		"start-prod": "NODE_ENV=production node app.js"
+		"start": "NODE_ENV=development nodemon --inspect bin/www",
+		"start-prod": "NODE_ENV=production node bin/www"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
 		"body-parser": "^1.19.0",
 		"express": "^4.17.1",
+		"http-errors": "^1.7.3",
 		"shortid": "^2.2.15",
 		"winston": "^3.2.1",
 		"winston-daily-rotate-file": "^4.4.2"
