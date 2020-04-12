@@ -18,7 +18,6 @@ let db = [
     }
 ];
 
-
 module.exports.create = obj => {
     db.push(obj);
     return Promise.resolve();

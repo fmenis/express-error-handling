@@ -8,7 +8,6 @@ const Response = require('./utils/classes/response.util');
 const logger = require('./utils/logger.util');
 const ClientError = require('./utils/classes/clientError.util');
 
-
 const app = express();
 
 app.use(bodyParser.json());
@@ -25,6 +24,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => { //jshint ignore:line
 	let error = err;
 
+	// if err is a non predicted error, log it and return a generic internal error to the
 	if (err instanceof Error) {
 		logger.error(error);
 		error = new ClientError('internal')
