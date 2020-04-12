@@ -2,10 +2,12 @@
 
 const db = require('../utils/db.util');
 const shortid = require('shortid');
+const logger = require('../utils/logger.util');
+const ClientError = require('../utils/classes/clientError.util');
 
 
 module.exports.getAllUsers = async () => {
-    let users = await db.getAll();
+    let users = await db.getAll();  
     //simulate work on the db results
     users = users.map(user => _deleteObjProps(user, ['created_at', 'is_deleted', 'updated_at',]));
     return users;
@@ -13,10 +15,7 @@ module.exports.getAllUsers = async () => {
 
 
 module.exports.getUserById = async id => {
-    let user = await db.getById(id);
-    if (user) {
-        //##TODO
-    }
+    let user = await _getUser(id);
     user = _deleteObjProps(user, ['created_at', 'is_deleted', 'updated_at']);
     return user;
 };
@@ -36,7 +35,7 @@ module.exports.createUser = async (name, age) => {
 
 
 module.exports.updateUser = async (id, name, age) => {
-    const user = await db.getById(id);
+    const user = await _getUser(id);
     user.name = name;
     user.age = age;
     user.updated_at = new Date();
@@ -46,11 +45,22 @@ module.exports.updateUser = async (id, name, age) => {
 
 
 module.exports.deleteUserById = async id => {
+    await _getUser(id)
     await db.deleteById(id);
 };
 
 
 // ----------------- HELPERS -----------------
+
+const _getUser = async id => {
+    const user = await db.getById(id);
+    if (!user) {
+        logger.error(new Error(`[Users] user with id ${id} not found`));
+        throw new ClientError('not_found', { resource: 'User', id: id });
+    }
+    return user;
+};
+
 
 const _deleteObjProps = (obj, props) => {
     props.forEach(key => {

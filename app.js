@@ -3,8 +3,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
-const clientErrors = require('./utils/clientErrors.util');
-const Response = require('./utils/response.util');
+const clientErrorMap = require('./utils/classes/clientErrorMap.util');
+const Response = require('./utils/classes/response.util');
+const logger = require('./utils/logger.util');
+const ClientError = require('./utils/classes/clientError.util');
+
 
 const app = express();
 
@@ -20,17 +23,24 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err, req, res, next) => { //jshint ignore:line
-	const client_error_code = err.code || 'internal';
-	const clientError = clientErrors[client_error_code];
+	let error = err;
 
-	const error = clientError(err.data);
-	const status_code = Object.assign({}, error).status;
-	delete error.status;
+	if (err instanceof Error) {
+		logger.error(error);
+		error = new ClientError('internal')
+	}
+
+	const client_error_code = error.code || 'internal';
+	const clientError = clientErrorMap[client_error_code];
+
+	const client_error = clientError(error.data);
+	const status_code = Object.assign({}, client_error).status;
+	delete client_error.status;
 
 	res.status(status_code);
 	res.send(new Response({
 		status: status_code,
-		error: error
+		error: client_error
 	}));
 });
 

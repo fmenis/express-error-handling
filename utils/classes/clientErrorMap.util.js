@@ -13,7 +13,7 @@ const clientErrors = {
         return {
             status: 404,
             title: 'Not found',
-            reason: `Resource ${data.resource} with id ${data.id} not found`
+            reason: `Resource ${data.resource} with id '${data.id}' not found`
         };
     },
     invalid_input: data => {
@@ -28,7 +28,7 @@ const clientErrors = {
         return {
             status: 400,
             title: 'Wrong credentials',
-            reason: 'Wrong email or password'
+            reason: 'Wrong email or password.'
 
         };
     }
