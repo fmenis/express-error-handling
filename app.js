@@ -3,7 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
-const logger = require('./utils/logger.util');
+const clientErrors = require('./utils/clientErrors.util');
+const Response = require('./utils/response.util');
 
 const app = express();
 
@@ -18,13 +19,20 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use(function (err, req, res, next) { //jshint ignore:line
-	// set locals, only providing error in development
-	// res.locals.message = err.message;
-	// res.locals.error = req.app.get('env') === 'development' ? err : {};
-	logger.error(err);
-	res.status(err.status || 500);
-	res.send(err.message);
+app.use((err, req, res, next) => { //jshint ignore:line
+	const client_error_code = err.code || 'internal';
+	const clientError = clientErrors[client_error_code];
+
+	const error = clientError(err.data);
+	const status_code = Object.assign({}, error).status;
+	delete error.status;
+
+	res.status(status_code);
+	res.send(new Response({
+		status: status_code,
+		error: error
+	}));
 });
+
 
 module.exports = app;

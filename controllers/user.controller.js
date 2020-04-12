@@ -2,62 +2,125 @@
 
 const userService = require('../services/user.service');
 const logger = require('../utils/logger.util');
+const CustomError = require('../utils/customError.util');
+const Response = require('../utils/response.util');
 
 module.exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await userService.getAllUsers();
-        res.send(users);
+        res.send(new Response({
+            success: true,
+            data: { users }
+        }));
     } catch (error) {
-        logger.error('[Users] error during users retrivment');
+        if (error instanceof Error) {
+            logger.error(error);
+            return next(new CustomError('internal'));
+        }
         next(error);
     }
 };
 
 
 module.exports.getUserById = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            logger.error(new Error(`[Users] input 'id' not provided`));
+            throw new CustomError('invalid_input', { input: 'id' });
+        }
 
-    const id = req.params.id;
-    if (!id) {
-        //##TODO
+        const user = await userService.getUserById(id);
+        res.send(new Response({
+            success: true,
+            data: { user }
+        }));
+
+    } catch (error) {
+        if (error instanceof Error) {
+            logger.error(error);
+            return next(new CustomError('internal'));
+        }
+        next(error);
     }
-
-    const user = await userService.getUserById(id);
-    res.send(user);
 };
 
 
 module.exports.createUser = async (req, res, next) => {
-    const { name, age } = req.body;
-    if (!name || !age) {
-        //##TODO
-    }
+    try {
+        const { name, age } = req.body;
+        if (!name) {
+            logger.error(new Error(`[Users] input 'name' not provided`));
+            throw new CustomError('invalid_input', { input: 'name' });
+        }
 
-    await userService.createUser(name, age);
-    res.send('OK');
+        if (!age) {
+            logger.error(new Error(`[Users] input 'age' not provided`));
+            throw new CustomError('invalid_input', { input: 'age' });
+        }
+
+        await userService.createUser(name, age);
+        res.send(new Response({ success: true }));
+
+    } catch (error) {
+        if (error instanceof Error) {
+            logger.error(error);
+            return next(new CustomError('internal'));
+        }
+        next(error);
+    }
 };
 
 
 module.exports.updateUser = async (req, res, next) => {
-    const { id } = req.params;
-    if (!id) {
-        //##TODO
-    }
-    const { name, age } = req.body;
-    if (!id || !name || !age) {
-        //##TODO
-    }
+    try {
 
-    await userService.updateUser(id, name, age);
-    res.send('OK');
+        const { id } = req.params;
+        if (!id) {
+            logger.error(new Error(`[Users] input 'id' not provided`));
+            throw new CustomError('invalid_input', { input: 'id' });
+        }
+
+        const { name, age } = req.body;
+        if (!name) {
+            logger.error(new Error(`[Users] input 'name' not provided`));
+            throw new CustomError('invalid_input', { input: 'name' });
+        }
+
+        if (!age) {
+            logger.error(new Error(`[Users] input 'age' not provided`));
+            throw new CustomError('invalid_input', { input: 'age' });
+        }
+
+        await userService.updateUser(id, name, age);
+        res.send(new Response({ success: true }));
+
+    } catch (error) {
+        if (error instanceof Error) {
+            logger.error(error);
+            return next(new CustomError('internal'));
+        }
+        next(error);
+    }
 };
 
 
 module.exports.deleteUserById = async (req, res, next) => {
-    const id = req.params.id;
-    if (!id) {
-        //##TODO
+    try {
+        const { id } = req.params;
+        if (!id) {
+            logger.error(new Error(`[Users] input 'id' not provided`));
+            throw new CustomError('invalid_input', { input: 'id' });
+        }
+    
+        await userService.deleteUserById(id);
+        res.send(new Response({ success: true }));
+        
+    } catch (error) {
+        if (error instanceof Error) {
+            logger.error(error);
+            return next(new CustomError('internal'));
+        }
+        next(error);
     }
-
-    await userService.deleteUserById(id);
-    res.send('OK');
 };
