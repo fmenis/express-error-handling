@@ -1,16 +1,27 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const clientErrorMap = require('./utils/classes/clientErrorMap.util');
 const Response = require('./utils/classes/response.util');
 const logger = require('./utils/logger.util');
 const ClientError = require('./utils/classes/clientError.util');
+const httpContext = require('express-http-context');
+// const morgan = require('morgan');
 
 const app = express();
 
+// 3th part middlewares
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+app.use(httpContext.middleware);
+// app.use(morgan('combined')); ##TODO
+
+// custom middlewares
+const contextify_request = require('./middlewares/contextify_request');
+app.use(contextify_request);
+
+// routes
 const user_routes = require('./routes/user.route');
 app.use('/users', user_routes);
 
@@ -27,7 +38,7 @@ app.use((err, req, res, next) => { //jshint ignore:line
 	// if err is a non predicted error, log it and return a generic internal error to the
 	if (err instanceof Error) {
 		logger.error(error);
-		error = new ClientError('internal')
+		error = new ClientError('internal');
 	}
 
 	const client_error_code = error.code || 'internal';

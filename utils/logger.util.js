@@ -4,6 +4,7 @@
 const path = require('path');
 const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
+const httpContext = require('express-http-context');
 
 
 const logDir = path.join('./logs');
@@ -34,7 +35,7 @@ const errorFileTransport = new transports.DailyRotateFile({
 });
 transportsList.push(errorFileTransport);
 
-
+//##TODO controllare!
 const exceptionHandlers = new transports.File({
     filename: `${logDir}/exceptions.log`,
     format: format.json(),
@@ -66,13 +67,50 @@ const loggerConfigs = {
 const logger = createLogger(loggerConfigs);
 
 /**
- * HACK
+ * HACK to save Error object (not requested for plain objects)
  */
 logger.error = err => {
     if (err instanceof Error) {
         return logger.log({ level: 'error', message: `${err.stack || err.stack || err}` });
-    } 
+    }
     logger.log({ level: 'error', message: err });
 };
 
-module.exports = logger;
+/**
+ * Format message adding the request id from the CLS
+ */
+const formatMessage = log => {
+    const request_id = httpContext.get('req_id');
+
+    /**
+     * Because a the startup server log is made before an incomint http request and so the
+     * middleware that add the session have not already done its work
+     */
+    if (!request_id) {
+        return log;
+    }
+
+    if (log instanceof Error) {
+        log = {
+            request_id: request_id,
+            message: log.message,
+            stack: log.stack
+        };
+    }
+
+    if (typeof log === 'string') {
+        log = `request_id: ${request_id} ${log}`;
+    }
+
+    return log;
+};
+
+
+module.exports = {
+    error: message => {
+        logger.error(formatMessage(message));
+    },
+    info: message => {
+        logger.info(formatMessage(message));
+    },
+};
