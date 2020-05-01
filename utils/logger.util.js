@@ -70,8 +70,14 @@ const logger = createLogger(loggerConfigs);
  * HACK to save Error object (not requested for plain objects)
  */
 logger.error = err => {
-    if (err instanceof Error) {
-        return logger.log({ level: 'error', message: `${err.stack || err.stack || err}` });
+    if (err instanceof Object) {
+        let message;
+        if (err.request_id) {
+            message = `request_id: ${err.request_id} ${err.stack || err.stack || err}`;
+        } else {
+            message = `${err.stack || err.stack || err}`;
+        }
+        return logger.log({ level: 'error', message: message });
     }
     logger.log({ level: 'error', message: err });
 };
