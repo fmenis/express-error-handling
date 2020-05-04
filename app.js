@@ -22,7 +22,7 @@ const contextify_request = require('./middlewares/contextify_request');
 app.use(contextify_request);
 
 // routes
-const user_routes = require('./routes/user.route');
+const user_routes = require('./users/user.route');
 app.use('/users', user_routes);
 
 // catch 404 and forward to error handler

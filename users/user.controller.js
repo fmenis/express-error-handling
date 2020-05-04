@@ -1,6 +1,6 @@
 'use strict';
 
-const userService = require('../services/user.service');
+const userService = require('./user.service');
 const logger = require('../utils/logger.util');
 const ClientError = require('../utils/classes/clientError.util');
 const Response = require('../utils/classes/response.util');
@@ -22,17 +22,11 @@ module.exports.getAllUsers = async (req, res, next) => {
 module.exports.getUserById = async (req, res, next) => {
     try {
         const id = req.params.id;
-        if (!id) {
-            logger.error(new Error(`[Users] input 'id' not provided`));
-            throw new ClientError('invalid_input', { input: 'id' });
-        }
-
         const user = await userService.getUserById(id);
         res.send(new Response({
             success: true,
             data: { user }
         }));
-
     } catch (error) {
         next(error);
     }
@@ -99,10 +93,10 @@ module.exports.deleteUserById = async (req, res, next) => {
             logger.error(new Error(`[Users] input 'id' not provided`));
             throw new ClientError('invalid_input', { input: 'id' });
         }
-    
+
         await userService.deleteUserById(id);
         res.send(new Response({ success: true }));
-        
+
     } catch (error) {
         next(error);
     }
