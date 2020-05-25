@@ -20,7 +20,7 @@ const clientErrors = {
         return {
             status: 400,
             title: 'Invalid input',
-            reason: `Input ${data.input} is not valid`
+            reason: `${data.message}`
         };
     },
     // auth

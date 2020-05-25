@@ -31,6 +31,7 @@ module.exports.createUser = async (name, age) => {
     };
 
     await db.create(new_user);
+    return new_user;
 };
 
 
@@ -41,11 +42,12 @@ module.exports.updateUser = async (id, name, age) => {
     user.updated_at = new Date();
 
     await db.updateById(id, user);
+    return user;
 };
 
 
 module.exports.deleteUserById = async id => {
-    await _getUser(id)
+    await _getUser(id);
     await db.deleteById(id);
 };
 
