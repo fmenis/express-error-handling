@@ -1,7 +1,6 @@
 'use strict';
 
 const Joi = require('@hapi/joi');
-const logger = require('../utils/logger.util');
 const ClientError = require('../utils/classes/clientError.util');
 
 module.exports = function (options) {
@@ -12,17 +11,17 @@ module.exports = function (options) {
 
         switch (endpoint) {
             case 'getUserById':
-                validation_result = validateGetUserById(req);
+                validation_result = _validateGetUserById(req);
                 break;
             case 'createUser':
-                validation_result = validateCreateUser(req);
+                validation_result = _validateCreateUser(req);
                 break;
             case 'updateUser':
-                validation_result = validateUpdateUser(req);
+                validation_result = _validateUpdateUser(req);
                 break;
 
             case 'deleteUserById':
-                validation_result = validateDeleteUserById(req);
+                validation_result = _validateDeleteUserById(req);
                 break;
 
             default:
@@ -39,7 +38,7 @@ module.exports = function (options) {
 };
 
 
-const validateGetUserById = req => {
+const _validateGetUserById = req => {
     const schema = Joi.object({
         id: Joi.string().regex(/^[\w@#$%_-]+$/).required()
     });
@@ -47,7 +46,7 @@ const validateGetUserById = req => {
 };
 
 
-const validateCreateUser = req => {
+const _validateCreateUser = req => {
     const schema = Joi.object({
         name: Joi.string().required(),
         age: Joi.number().required()
@@ -56,16 +55,17 @@ const validateCreateUser = req => {
 };
 
 
-const validateUpdateUser = req => {
+const _validateUpdateUser = req => {
     const schema = Joi.object({
         name: Joi.string().required(),
-        age: Joi.number().required()
+        age: Joi.number().required(),
+        id: Joi.string().regex(/^[\w@#$%_-]+$/).required()
     });
-    return schema.validate({ name: req.body.name, age: req.body.age });
+    return schema.validate({ name: req.body.name, age: req.body.age, id: req.params.id });
 };
 
 
-const validateDeleteUserById = req => {
+const _validateDeleteUserById = req => {
     const schema = Joi.object({
         id: Joi.string().regex(/^[\w@#$%_-]+$/).required()
     });
