@@ -22,6 +22,7 @@
 		"winston-daily-rotate-file": "^4.4.2"
 	},
 	"devDependencies": {
+		"jsdoc": "^3.6.4",
 		"nodemon": "^2.0.2"
 	}
 }

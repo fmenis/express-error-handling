@@ -4,8 +4,8 @@
  * Module dependencies.
  */
 
-const logger = require('../utils/logger.util');
-const app = require('../app');
+const logger = require('../src/utils/logger.util');
+const app = require('../src/app');
 const debug = require('debug')('test:server');
 const http = require('http');
 
