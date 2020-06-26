@@ -3,7 +3,6 @@
 const express = require('express');
 const createError = require('http-errors');
 const clientErrorMap = require('./utils/classes/clientErrorMap.util');
-const Response = require('./utils/classes/response.util');
 const logger = require('./utils/logger.util');
 const ClientError = require('./utils/classes/clientError.util');
 const httpContext = require('express-http-context');
@@ -49,10 +48,7 @@ app.use((err, req, res, next) => { //jshint ignore:line
 	delete client_error.status;
 
 	res.status(status_code);
-	res.send(new Response({
-		status: status_code,
-		error: client_error
-	}));
+	res.send(client_error);
 });
 
 
